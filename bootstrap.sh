@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 # Install and Setup chezmoi
 # ref: https://www.chezmoi.io/install/

@@ -17,7 +17,7 @@
   args = ["-c", "winget install 1password-cli --no-upgrade --nowarn || echo '1password-cli is already installed'"]
 {{ else if eq .chezmoi.os "linux" -}}
   command = "sh"
-  args = ["-c", "$(chezmoi source-path)/scripts/install-1pass.sh"]
+  args = ["-c", "$CHEZMOI_SOURCE_DIR/scripts/install-1pass.sh"]
 {{ else if eq .chezmoi.os "darwin" -}}
   command = "brew"
   args = ["install", "1password-cli"]

@@ -1,9 +1,15 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 # https://developer.1password.com/docs/cli/get-started/
 # apt 前提
+
+# もしすでにインストールされていたらスキップ
+if command -v op >/dev/null 2>&1; then
+  echo "1Password CLI is already installed. Skipping installation."
+  exit 0
+fi
 
 # Add the key for the 1Password apt repository
 curl -sS https://downloads.1password.com/linux/keys/1password.asc | \

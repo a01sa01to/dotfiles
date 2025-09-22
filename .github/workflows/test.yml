@@ -1,0 +1,66 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  chezmoi:
+    name: chezmoi
+    strategy:
+      matrix:
+        runner: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Setup chezmoi (Ubuntu)
+        if: matrix.runner == 'ubuntu-latest'
+        run: sudo snap install chezmoi --classic
+      - name: Setup chezmoi (macOS)
+        if: matrix.runner == 'macos-latest'
+        run: brew install chezmoi
+      - name: Run chezmoi
+        if: matrix.runner != 'windows-latest'
+        run: chezmoi init --apply -S $GITHUB_WORKSPACE --verbose
+      - name: chezmoi doctor
+        # network 使うと GitHub API rate limit で引っかかるかもなので
+        run: chezmoi doctor --no-network -S $GITHUB_WORKSPACE --verbose
+      - name: chezmoi verify
+        run: chezmoi verify -S $GITHUB_WORKSPACE --verbose
+
+  chezmoi-win:
+    name: chezmoi (windows-latest)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Update PATH for winget
+        run: echo "$Env:LocalAppData\Microsoft\WinGet\Links" >> "$Env:GITHUB_PATH"
+      - name: Setup chezmoi
+        run: winget install twpayne.chezmoi --accept-source-agreements --accept-package-agreements --disable-interactivity
+      - name: Run chezmoi
+        run: chezmoi init --apply -S $Env:GITHUB_WORKSPACE --verbose
+      - name: chezmoi doctor
+        # network 使うと GitHub API rate limit で引っかかるかもなので
+        run: chezmoi doctor --no-network -S $Env:GITHUB_WORKSPACE --verbose
+      - name: chezmoi verify
+        run: chezmoi verify -S $Env:GITHUB_WORKSPACE --verbose
+
+  bootstrap:
+    name: bootstrap.sh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Run bootstrap.sh
+        run: ./bootstrap.sh
+      - run: chezmoi doctor
+      - run: chezmoi verify
