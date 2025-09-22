@@ -21,20 +21,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Setup chezmoi (Ubuntu)
-        if: matrix.runner == 'ubuntu-latest'
-        run: sudo snap install chezmoi --classic
-      - name: Setup chezmoi (macOS)
-        if: matrix.runner == 'macos-latest'
-        run: brew install chezmoi
+      - name: Setup chezmoi
+        run: |
+          if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
+            sudo snap install chezmoi --classic
+          elif [ "${{ matrix.runner }}" = "macos-latest" ]; then
+            brew install chezmoi
+          fi
       - name: Run chezmoi
-        if: matrix.runner != 'windows-latest'
         run: chezmoi init --apply -S $GITHUB_WORKSPACE --verbose
       - name: chezmoi doctor
         # network 使うと GitHub API rate limit で引っかかるかもなので
         run: chezmoi doctor --no-network -S $GITHUB_WORKSPACE --verbose
       - name: chezmoi verify
         run: chezmoi verify -S $GITHUB_WORKSPACE --verbose
+      - name: File Existence Check
+        run: |
+          if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
+            sh "$GITHUB_WORKSPACE/scripts/test-linux.sh"
+          elif [ "${{ matrix.runner }}" = "macos-latest" ]; then
+            sh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
+          fi
 
   chezmoi-win:
     name: chezmoi (windows-latest)
@@ -53,6 +60,8 @@ jobs:
         run: chezmoi doctor --no-network -S $Env:GITHUB_WORKSPACE --verbose
       - name: chezmoi verify
         run: chezmoi verify -S $Env:GITHUB_WORKSPACE --verbose
+      - name: File Existence Check
+        run: pwsh "$Env:GITHUB_WORKSPACE\scripts\test-windows.ps1"
 
   bootstrap:
     name: bootstrap.sh
