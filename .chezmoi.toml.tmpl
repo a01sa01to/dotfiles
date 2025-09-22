@@ -8,3 +8,17 @@
 [diff]
   command = "code"
   args = ["--wait", "--diff"]
+
+# init 時に 1Pass をインストール
+# ref: https://www.chezmoi.io/user-guide/advanced/install-your-password-manager-on-init/
+[hooks.read-source-state.pre]
+{{ if eq .chezmoi.os "windows" -}}
+  command = "pwsh"
+  args = ["-c", "winget install 1password-cli --no-upgrade --nowarn || echo '1password-cli is already installed'"]
+{{ else if eq .chezmoi.os "linux" -}}
+  command = "sh"
+  args = ["-c", "$(chezmoi source-path)/scripts/install-1pass.sh"]
+{{ else if eq .chezmoi.os "darwin" -}}
+  command = "brew"
+  args = ["install", "1password-cli"]
+{{ end -}}
