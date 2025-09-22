@@ -1,0 +1,16 @@
+README.md
+.editorconfig
+bootstrap.sh
+scripts
+
+{{ if eq .chezmoi.os "windows" -}}
+
+{{ end -}}
+
+{{ if eq .chezmoi.os "darwin" -}}
+dot_wslconfig
+{{ end -}}
+
+{{ if eq .chezmoi.os "linux" -}}
+dot_wslconfig
+{{ end -}}
