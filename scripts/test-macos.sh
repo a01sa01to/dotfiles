@@ -21,18 +21,18 @@ FileNotExists() {
 
 FileContains() {
   if grep -q "$2" "$1"; then
-    echo "::notice::[Linux] $1 contains $2"
+    echo "::notice::[macOS] $1 contains $2"
   else
-    echo "::warning::[Linux] $1 does not contain $2"
+    echo "::warning::[macOS] $1 does not contain $2"
     FAIL=1
   fi
 }
 
 FileNotContains() {
   if ! grep -q "$2" "$1"; then
-    echo "::notice::[Linux] $1 does not contain $2"
+    echo "::notice::[macOS] $1 does not contain $2"
   else
-    echo "::warning::[Linux] $1 contains $2"
+    echo "::warning::[macOS] $1 contains $2"
     FAIL=1
   fi
 }
