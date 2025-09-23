@@ -28,7 +28,7 @@ jobs:
       attestations: write
       id-token: write
     outputs:
-      image: ${{ steps.build.outputs.metadata }}
+      imagedigest: ${{ steps.build.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -73,11 +73,11 @@ jobs:
           brew install coreutils
           alias timeout='gtimeout'
           # Docker を使えるようにする
-          brew install --cask docker
-          open /Applications/Docker.app
-          timeout 120s bash -c 'until docker info; do sleep 1; done'
+          brew install docker
+          brew install colima
+          colima start
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.image['image.name'] }}@${{ needs.onepass-mock-build.outputs.image['containerimage.digest'] }}
+        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ env.DOCKER_IMAGE_NAME }}@${{ needs.onepass-mock-build.outputs.imagedigest }}
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
@@ -114,7 +114,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.image['image.name'] }}@${{ needs.onepass-mock-build.outputs.image['containerimage.digest'] }}
+        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ env.DOCKER_IMAGE_NAME }}@${{ needs.onepass-mock-build.outputs.imagedigest }}
       - name: Wait for 1pass-mock to be ready
         run: |
           $timeout = New-TimeSpan -Seconds 60
