@@ -61,21 +61,12 @@ jobs:
     needs: onepass-mock-build
     strategy:
       matrix:
-        runner: [ubuntu-latest, macos-latest]
+        runner: [ubuntu-latest]
     runs-on: ${{ matrix.runner }}
+    # macos-latest も追加したかったが、仮想化がサポートされていない(?)せいで docker が動かないので断念
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Setup for macOS
-        if: matrix.runner == 'macos-latest'
-        run: |
-          # timeout を使えるようにする
-          brew install coreutils
-          alias timeout='gtimeout'
-          # Docker を使えるようにする
-          brew install docker
-          brew install colima
-          colima start
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
