@@ -9,16 +9,26 @@
   command = "code"
   args = ["--wait", "--diff"]
 
-# init 時に 1Pass をインストール
-# ref: https://www.chezmoi.io/user-guide/advanced/install-your-password-manager-on-init/
 [hooks.read-source-state.pre]
-{{ if eq .chezmoi.os "windows" -}}
+{{- /*
+  init 時に 1Pass をインストール
+  ref: https://www.chezmoi.io/user-guide/advanced/install-your-password-manager-on-init/
+*/ -}}
+{{ if eq .chezmoi.os "windows" }}
   command = "pwsh"
   args = ["-c", "winget install 1password-cli --no-upgrade --nowarn || echo '1password-cli is already installed'"]
-{{ else if eq .chezmoi.os "linux" -}}
+{{ else if eq .chezmoi.os "linux" }}
   command = "sh"
   args = ["-c", "$CHEZMOI_SOURCE_DIR/scripts/install-1pass.sh"]
-{{ else if eq .chezmoi.os "darwin" -}}
+{{ else if eq .chezmoi.os "darwin" }}
   command = "brew"
   args = ["install", "1password-cli"]
-{{ end -}}
+{{ end }}
+
+{{- /*
+  CI 環境では 1pass-mock を使う
+*/ -}}
+{{ if eq (env "CI") "true" }}
+[onepassword]
+  mode = "connect"
+{{ end }}

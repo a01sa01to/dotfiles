@@ -1,0 +1,11 @@
+{
+  "title": "SSH key",
+  "fields": [
+    {
+      "id": "publicKey",
+      "type": "STRING",
+      "label": "公開鍵",
+      "value": "ssh-pubkey"
+    }
+  ]
+}

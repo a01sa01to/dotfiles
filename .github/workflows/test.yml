@@ -11,6 +11,11 @@ on:
 permissions:
   contents: read
 
+env:
+  # 1Password mock
+  OP_CONNECT_HOST: http://localhost:8080
+  OP_CONNECT_TOKEN: foobar
+
 jobs:
   chezmoi:
     name: chezmoi
@@ -21,6 +26,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+          cache-dependency-path: 1pass-mock/go.sum
+      - name: Run 1pass-mock
+        id: run-1passmock
+        run: |
+          go build -o 1pass-mock .
+          ./1pass-mock &
+          echo "PID=$!" >> "$GITHUB_OUTPUT"
+        working-directory: 1pass-mock
+      - name: Setup for macOS
+        if: matrix.runner == 'macos-latest'
+        run: |
+          # timeout を使えるようにする
+          brew install coreutils
+          alias timeout='gtimeout'
+      - name: Wait for 1pass-mock to be ready
+        run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
         run: |
           if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
@@ -42,6 +67,9 @@ jobs:
           elif [ "${{ matrix.runner }}" = "macos-latest" ]; then
             sh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
           fi
+      - name: Teardown 1pass-mock
+        if: always()
+        run: kill ${{ steps.run-1passmock.outputs.PID }}
 
   chezmoi-win:
     name: chezmoi (windows-latest)
@@ -49,6 +77,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+          cache-dependency-path: 1pass-mock/go.sum
+      - name: Run 1pass-mock
+        id: run-1passmock
+        run: |
+          go build -o 1pass-mock.exe .
+          $process = Start-Process -FilePath .\1pass-mock.exe -PassThru
+          echo "PID=$($process.Id)" >> "$Env:GITHUB_OUTPUT"
+        working-directory: 1pass-mock
+      - name: Wait for 1pass-mock to be ready
+        run: |
+          $timeout = New-TimeSpan -Seconds 60
+          $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+          while ($stopwatch.Elapsed -lt $timeout) {
+            try {
+              Invoke-RestMethod -Uri http://localhost:8080/health -TimeoutSec 1 -Method GET -ErrorAction Stop | Out-Null
+              $stopwatch.Stop()
+              exit 0
+            }
+            catch {
+              Start-Sleep -Seconds 1
+            }
+          }
+          Write-Error "Timeout waiting for 1pass-mock to be ready"
       - name: Update PATH for winget
         run: echo "$Env:LocalAppData\Microsoft\WinGet\Links" >> "$Env:GITHUB_PATH"
       - name: Setup chezmoi
@@ -62,6 +117,9 @@ jobs:
         run: chezmoi verify -S $Env:GITHUB_WORKSPACE --verbose
       - name: File Existence Check
         run: pwsh "$Env:GITHUB_WORKSPACE\scripts\test-windows.ps1"
+      - name: Teardown 1pass-mock
+        if: always()
+        run: Stop-Process -Id ${{ steps.run-1passmock.outputs.PID }} -Force
 
   bootstrap:
     name: bootstrap.sh
