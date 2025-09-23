@@ -86,7 +86,7 @@ jobs:
         id: run-1passmock
         run: |
           go build -o 1pass-mock.exe .
-          $process = Start-Process -FilePath .\1pass-mock.exe -NoNewWindow -PassThru
+          $process = Start-Process -FilePath .\1pass-mock.exe -PassThru
           echo "PID=$($process.Id)" >> "$Env:GITHUB_OUTPUT"
         working-directory: 1pass-mock
       - name: Wait for 1pass-mock to be ready
@@ -95,7 +95,7 @@ jobs:
           $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
           while ($stopwatch.Elapsed -lt $timeout) {
             try {
-              Invoke-RestMethod -Uri http://localhost:8080/health -Method GET -ErrorAction Stop | Out-Null
+              Invoke-RestMethod -Uri http://localhost:8080/health -TimeoutSec 1 -Method GET -ErrorAction Stop | Out-Null
               $stopwatch.Stop()
               exit 0
             }
