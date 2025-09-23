@@ -2,10 +2,8 @@ $global:FAIL = 0
 
 function FileExists {
   param([string]$Path)
-  if (Test-Path $Path -PathType Leaf) {
-    Write-Output "::notice::[Windows] $Path exists"
-  } else {
-    Write-Output "::warning::[Windows] $Path does not exist"
+  if (-Not (Test-Path $Path -PathType Leaf)) {
+    Write-Output "::warning::$Path does not exist"
     $global:FAIL = 1
   }
 }
@@ -13,10 +11,8 @@ function FileExists {
 function FileNotExists {
   param([string]$Path)
   Write-Output "Checking $Path"
-  if (-not (Test-Path $Path -PathType Leaf)) {
-    Write-Output "::notice::[Windows] $Path does not exist"
-  } else {
-    Write-Output "::warning::[Windows] $Path exists"
+  if (Test-Path $Path -PathType Leaf) {
+    Write-Output "::warning::$Path exists"
     $global:FAIL = 1
   }
 }
@@ -24,10 +20,8 @@ function FileNotExists {
 function FileContains {
   param([string]$Path, [string]$Content)
   $fileContent = Get-Content $Path -Raw
-  if ($fileContent -match [regex]::Escape($Content)) {
-    Write-Output "::notice::[Windows] $Path contains '$Content'"
-  } else {
-    Write-Output "::warning::[Windows] $Path does not contain '$Content'"
+  if ($fileContent -notmatch [regex]::Escape($Content)) {
+    Write-Output "::warning::$Path does not contain '$Content'"
     $global:FAIL = 1
   }
 }
@@ -35,10 +29,8 @@ function FileContains {
 function FileNotContains {
   param([string]$Path, [string]$Content)
   $fileContent = Get-Content $Path -Raw
-  if ($fileContent -notmatch [regex]::Escape($Content)) {
-    Write-Output "::notice::[Windows] $Path does not contain '$Content'"
-  } else {
-    Write-Output "::warning::[Windows] $Path contains '$Content'"
+  if ($fileContent -match [regex]::Escape($Content)) {
+    Write-Output "::warning::$Path contains '$Content'"
     $global:FAIL = 1
   }
 }
@@ -55,8 +47,8 @@ FileContains "$CONFIG_DIR/.gitconfig" "ssh-test-pubkey"
 # --------------------------------------------------- #
 
 if ($FAIL -eq 1) {
-    Write-Output "::error::[Windows] Some tests failed"
+    Write-Output "::error::Some tests failed"
     exit 1
 } else {
-    Write-Output "::notice::[Windows] All tests passed"
+    Write-Output "::notice::All tests passed"
 }
