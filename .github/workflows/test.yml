@@ -75,7 +75,7 @@ jobs:
           $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
           while ($stopwatch.Elapsed -lt $timeout) {
             try {
-              Invoke-RestMethod -Uri http://localhost:8080/health -Medhod GET -ErrorAction Stop | Out-Null
+              Invoke-RestMethod -Uri http://localhost:8080/health -Method GET -ErrorAction Stop | Out-Null
               $stopwatch.Stop()
               exit 0
             }
