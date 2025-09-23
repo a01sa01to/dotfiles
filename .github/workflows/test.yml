@@ -28,7 +28,7 @@ jobs:
       attestations: write
       id-token: write
     outputs:
-      imageid: ${{ steps.build.outputs.imageid }}
+      image: ${{ steps.build.outputs.metadata }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -64,8 +64,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Docker
+        if: matrix.runner == 'macos-latest'
+        run: |
+          brew install --cask docker
+          open /Applications/Docker.app
+          timeout 120s bash -c 'until docker info; do sleep 1; done'
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.imageid }}
+        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.image.image.name }}@{{ needs.onepass-mock-build.outputs.image.containerimage.digest }}
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
@@ -102,7 +108,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.imageid }}
+        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.image.image.name }}@{{ needs.onepass-mock-build.outputs.image.containerimage.digest }}
       - name: Wait for 1pass-mock to be ready
         run: |
           $timeout = New-TimeSpan -Seconds 60
