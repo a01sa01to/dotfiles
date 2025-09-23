@@ -1,0 +1,32 @@
+[core]
+  editor = code --wait
+  longpaths = true
+  autocrlf = input
+  symlinks = true
+
+[user]
+  name = Asa
+  email = 26807394+a01sa01to@users.noreply.github.com
+  signingKey = {{ onepasswordRead "op://Personal/j7hesqzqikuevpgv6wlxc7ikxi/publicKey" }}
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+{{ if eq .chezmoi.os "windows" }}
+  program = "{{ env "LocalAppData" | replace "\\" "/" }}/1Password/app/8/op-ssh-sign.exe"
+{{ else }}
+  # TODO
+{{ end }}
+
+[commit]
+  gpgsign = true
+
+[http]
+  postBuffer = 100M
+
+[init]
+  defaultBranch = main
+
+[merge "ours"]
+  driver = true
