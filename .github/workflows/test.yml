@@ -12,13 +12,51 @@ permissions:
   contents: read
 
 env:
+  DOCKER_REGISTRY: ghcr.io
+  DOCKER_IMAGE_NAME: ghcr.io/${{ github.repository }}/1pass-mock
   # 1Password mock
   OP_CONNECT_HOST: http://localhost:8080
   OP_CONNECT_TOKEN: foobar
 
 jobs:
+  onepass-mock-build:
+    name: 1pass-mock Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    outputs:
+      imageid: ${{ steps.build.outputs.imageid }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_IMAGE_NAME }}
+      - name: Build
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: 1pass-mock
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
   chezmoi:
     name: chezmoi
+    needs: onepass-mock-build
     strategy:
       matrix:
         runner: [ubuntu-latest, macos-latest]
@@ -26,17 +64,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build 1pass-mock
-        uses: docker/build-push-action@v6
-        with:
-          file: 1pass-mock/Dockerfile
-          context: 1pass-mock
-          push: false
-          tags: 1pass-mock
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock 1pass-mock
+        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.imageid }}
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
@@ -67,21 +96,13 @@ jobs:
 
   chezmoi-win:
     name: chezmoi (windows-latest)
+    needs: onepass-mock-build
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build 1pass-mock
-        uses: docker/build-push-action@v6
-        with:
-          file: 1pass-mock/Dockerfile
-          context: 1pass-mock
-          push: false
-          tags: 1pass-mock
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock 1pass-mock
+        run: docker run -d -p 8080:8080 --name 1pass-mock ${{ needs.onepass-mock-build.outputs.imageid }}
       - name: Wait for 1pass-mock to be ready
         run: |
           $timeout = New-TimeSpan -Seconds 60
