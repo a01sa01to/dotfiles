@@ -30,6 +30,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: "1.25"
+          cache-dependency-path: 1pass-mock/go.sum
       - name: Run 1pass-mock
         id: run-1passmock
         run: |
@@ -80,6 +81,7 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: "1.25"
+          cache-dependency-path: 1pass-mock/go.sum
       - name: Run 1pass-mock
         id: run-1passmock
         run: |
