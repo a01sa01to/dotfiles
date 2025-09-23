@@ -1,7 +1,7 @@
 #!/bin/sh
 FAIL=0
 
-file_exists() {
+FileExists() {
   if [ -f "$1" ]; then
     echo "::notice::[Linux] $1 exists"
   else
@@ -10,7 +10,7 @@ file_exists() {
   fi
 }
 
-file_not_exists() {
+FileNotExists() {
   if [ ! -f "$1" ]; then
     echo "::notice::[Linux] $1 does not exist"
   else
@@ -19,11 +19,32 @@ file_not_exists() {
   fi
 }
 
+FileContains() {
+  if grep -q "$2" "$1"; then
+    echo "::notice::[Linux] $1 contains $2"
+  else
+    echo "::warning::[Linux] $1 does not contain $2"
+    FAIL=1
+  fi
+}
+
+FileNotContains() {
+  if ! grep -q "$2" "$1"; then
+    echo "::notice::[Linux] $1 does not contain $2"
+  else
+    echo "::warning::[Linux] $1 contains $2"
+    FAIL=1
+  fi
+}
+
 CONFIG_DIR=$(chezmoi target-path)
 
 # --------------------------------------------------- #
 
-file_not_exists "$CONFIG_DIR/.wslconfig"
+FileNotExists "$CONFIG_DIR/.wslconfig"
+FileExists "$CONFIG_DIR/.gitconfig"
+
+FileContains "$CONFIG_DIR/.gitconfig" "ssh-pubkey"
 
 # --------------------------------------------------- #
 
