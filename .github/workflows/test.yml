@@ -21,16 +21,21 @@ jobs:
     name: chezmoi
     strategy:
       matrix:
-        runner: [ubuntu-latest]
+        runner: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.runner }}
-    # macos-latest も追加したかったが、仮想化がサポートされていない(?)せいで docker が動かないので断念
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Build 1pass-mock
-        run: docker build -t 1pass-mock ./1pass-mock
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock 1pass-mock
+        id: run-1passmock
+        run: |
+          go build -o 1pass-mock .
+          ./1pass-mock &
+          echo "PID=$!" >> "$GITHUB_OUTPUT"
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
@@ -55,9 +60,8 @@ jobs:
             sh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
           fi
       - name: Teardown 1pass-mock
-        run: |
-          docker stop 1pass-mock
-          docker rm 1pass-mock
+        if: always()
+        run: kill ${{ steps.run-1passmock.outputs.PID }}
 
   chezmoi-win:
     name: chezmoi (windows-latest)
@@ -65,10 +69,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Build 1pass-mock
-        run: docker build -t 1pass-mock ./1pass-mock
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
       - name: Run 1pass-mock
-        run: docker run -d -p 8080:8080 --name 1pass-mock 1pass-mock
+        id: run-1passmock
+        run: |
+          go build -o 1pass-mock.exe .
+          $process = Start-Process -FilePath .\1pass-mock.exe -NoNewWindow -PassThru
+          echo "PID=$($process.Id)" >> "$Env:GITHUB_OUTPUT"
       - name: Wait for 1pass-mock to be ready
         run: |
           $timeout = New-TimeSpan -Seconds 60
@@ -98,9 +108,8 @@ jobs:
       - name: File Existence Check
         run: pwsh "$Env:GITHUB_WORKSPACE\scripts\test-windows.ps1"
       - name: Teardown 1pass-mock
-        run: |
-          docker stop 1pass-mock
-          docker rm 1pass-mock
+        if: always()
+        run: Stop-Process -Id ${{ steps.run-1passmock.outputs.PID }} -Force
 
   bootstrap:
     name: bootstrap.sh
