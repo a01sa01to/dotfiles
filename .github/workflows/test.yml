@@ -11,6 +11,11 @@ on:
 permissions:
   contents: read
 
+env:
+  # 1Password mock
+  OP_CONNECT_HOST: http://localhost:8080
+  OP_CONNECT_TOKEN: foobar
+
 jobs:
   chezmoi:
     name: chezmoi
