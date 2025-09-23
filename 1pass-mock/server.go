@@ -10,6 +10,10 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+func healthCheckHandler(c echo.Context) error {
+	return c.NoContent(http.StatusNoContent)
+}
+
 func vaultsHandler(c echo.Context) error {
 	data, err := os.ReadFile("data/vaults.json")
 	if err != nil {
@@ -34,6 +38,7 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
+	e.GET("/health", healthCheckHandler)
 	e.GET("/v1/vaults", vaultsHandler)
 	e.GET("/v1/vaults/:vault_id/items/:item_id", itemHandler)
 

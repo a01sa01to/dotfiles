@@ -21,6 +21,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build 1pass-mock
+        uses: docker/build-push-action@v6
+        with:
+          file: 1pass-mock/Dockerfile
+          context: 1pass-mock
+          push: false
+          tags: 1pass-mock
+      - name: Run 1pass-mock
+        run: docker run -d -p 8080:8080 --name 1pass-mock 1pass-mock
+      - name: Wait for 1pass-mock to be ready
+        run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
         run: |
           if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
@@ -42,6 +55,10 @@ jobs:
           elif [ "${{ matrix.runner }}" = "macos-latest" ]; then
             sh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
           fi
+      - name: Teardown 1pass-mock
+        run: |
+          docker stop 1pass-mock
+          docker rm 1pass-mock
 
   chezmoi-win:
     name: chezmoi (windows-latest)
@@ -49,6 +66,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build 1pass-mock
+        uses: docker/build-push-action@v6
+        with:
+          file: 1pass-mock/Dockerfile
+          context: 1pass-mock
+          push: false
+          tags: 1pass-mock
+      - name: Run 1pass-mock
+        run: docker run -d -p 8080:8080 --name 1pass-mock 1pass-mock
+      - name: Wait for 1pass-mock to be ready
+        run: |
+          $timeout = New-TimeSpan -Seconds 60
+          $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+          while ($stopwatch.Elapsed -lt $timeout) {
+            try {
+              Invoke-RestMethod -Uri http://localhost:8080/health -Medhod GET -ErrorAction Stop | Out-Null
+              $stopwatch.Stop()
+              exit 0
+            }
+            catch {
+              Start-Sleep -Seconds 1
+            }
+          }
+          Write-Error "Timeout waiting for 1pass-mock to be ready"
       - name: Update PATH for winget
         run: echo "$Env:LocalAppData\Microsoft\WinGet\Links" >> "$Env:GITHUB_PATH"
       - name: Setup chezmoi
@@ -62,6 +105,10 @@ jobs:
         run: chezmoi verify -S $Env:GITHUB_WORKSPACE --verbose
       - name: File Existence Check
         run: pwsh "$Env:GITHUB_WORKSPACE\scripts\test-windows.ps1"
+      - name: Teardown 1pass-mock
+        run: |
+          docker stop 1pass-mock
+          docker rm 1pass-mock
 
   bootstrap:
     name: bootstrap.sh
