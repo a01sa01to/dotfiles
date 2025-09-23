@@ -42,9 +42,9 @@ CONFIG_DIR=$(chezmoi target-path)
 # --------------------------------------------------- #
 
 FileNotExists "$CONFIG_DIR/.wslconfig"
-FileExists "$CONFIG_DIR/.gitconfig"
 
-FileContains "$CONFIG_DIR/.gitconfig" "ssh-pubkey"
+FileExists "$CONFIG_DIR/.gitconfig"
+FileContains "$CONFIG_DIR/.gitconfig" "ssh-test-pubkey"
 
 # --------------------------------------------------- #
 

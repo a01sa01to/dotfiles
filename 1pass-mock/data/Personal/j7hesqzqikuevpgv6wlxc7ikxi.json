@@ -5,7 +5,7 @@
       "id": "publicKey",
       "type": "STRING",
       "label": "公開鍵",
-      "value": "ssh-pubkey"
+      "value": "ssh-test-pubkey"
     }
   ]
 }
