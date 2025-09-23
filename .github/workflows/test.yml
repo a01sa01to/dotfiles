@@ -36,6 +36,7 @@ jobs:
           go build -o 1pass-mock .
           ./1pass-mock &
           echo "PID=$!" >> "$GITHUB_OUTPUT"
+        working-directory: 1pass-mock
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
@@ -79,6 +80,7 @@ jobs:
           go build -o 1pass-mock.exe .
           $process = Start-Process -FilePath .\1pass-mock.exe -NoNewWindow -PassThru
           echo "PID=$($process.Id)" >> "$Env:GITHUB_OUTPUT"
+        working-directory: 1pass-mock
       - name: Wait for 1pass-mock to be ready
         run: |
           $timeout = New-TimeSpan -Seconds 60
