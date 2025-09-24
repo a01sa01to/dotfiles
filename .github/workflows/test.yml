@@ -127,7 +127,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+          cache-dependency-path: 1pass-mock/go.sum
+      - name: Run 1pass-mock
+        id: run-1passmock
+        run: |
+          go build -o 1pass-mock .
+          ./1pass-mock &
+          echo "PID=$!" >> "$GITHUB_OUTPUT"
+        working-directory: 1pass-mock
+      - name: Wait for 1pass-mock to be ready
+        run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Run bootstrap.sh
         run: ./bootstrap.sh
-      - run: chezmoi doctor
-      - run: chezmoi verify
+      - name: Install chezmoi (for test)
+        run: sudo snap install chezmoi --classic
+      - name: chezmoi doctor
+        run: chezmoi doctor
+      - name: chezmoi verify
+        run: chezmoi verify
+      - name: File Existence Check
+        run: sh "$GITHUB_WORKSPACE/scripts/test-linux.sh"
+      - name: Teardown 1pass-mock
+        if: always()
+        run: kill ${{ steps.run-1passmock.outputs.PID }}
