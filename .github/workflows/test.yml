@@ -60,7 +60,7 @@ jobs:
         run: chezmoi doctor --no-network -S $GITHUB_WORKSPACE --verbose
       - name: chezmoi verify
         run: chezmoi verify -S $GITHUB_WORKSPACE --verbose
-      - name: File Existence Check
+      - name: Test
         run: |
           if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
             sh "$GITHUB_WORKSPACE/scripts/test-linux.sh"
@@ -115,7 +115,7 @@ jobs:
         run: chezmoi doctor --no-network -S $Env:GITHUB_WORKSPACE --verbose
       - name: chezmoi verify
         run: chezmoi verify -S $Env:GITHUB_WORKSPACE --verbose
-      - name: File Existence Check
+      - name: Test
         run: pwsh "$Env:GITHUB_WORKSPACE\scripts\test-windows.ps1"
       - name: Teardown 1pass-mock
         if: always()
@@ -149,7 +149,7 @@ jobs:
         run: chezmoi doctor
       - name: chezmoi verify
         run: chezmoi verify
-      - name: File Existence Check
+      - name: Test
         run: sh "$GITHUB_WORKSPACE/scripts/test-linux.sh"
       - name: Teardown 1pass-mock
         if: always()

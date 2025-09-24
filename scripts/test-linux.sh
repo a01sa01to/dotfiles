@@ -29,6 +29,13 @@ FileNotContains() {
   fi
 }
 
+CommandExists() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "::warning::$1 command does not exist"
+    FAIL=1
+  fi
+}
+
 CONFIG_DIR=$(chezmoi target-path)
 
 # --------------------------------------------------- #
@@ -41,6 +48,8 @@ FileContains "$CONFIG_DIR/.gitconfig" "ssh-test-pubkey"
 FileExists "$CONFIG_DIR/.npmrc"
 FileContains "$CONFIG_DIR/.npmrc" "//registry.npmjs.org/:_authToken=test-npm-access-token"
 FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-packages-pat"
+
+CommandExists "gh"
 
 # --------------------------------------------------- #
 

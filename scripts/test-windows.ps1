@@ -35,6 +35,14 @@ function FileNotContains {
   }
 }
 
+function CommandExists {
+  param([string]$Command)
+  if (-Not (Get-Command $Command -ErrorAction SilentlyContinue)) {
+    Write-Output "::warning::$Command command does not exist"
+    $global:FAIL = 1
+  }
+}
+
 $CONFIG_DIR = chezmoi target-path
 
 # --------------------------------------------------- #
@@ -47,6 +55,8 @@ FileContains "$CONFIG_DIR/.gitconfig" "ssh-test-pubkey"
 FileExists "$CONFIG_DIR/.npmrc"
 FileContains "$CONFIG_DIR/.npmrc" "//registry.npmjs.org/:_authToken=test-npm-access-token"
 FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-packages-pat"
+
+CommandExists "gh"
 
 # --------------------------------------------------- #
 
