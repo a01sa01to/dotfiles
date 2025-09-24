@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "darwin" -}}
+
+#!/bin/sh
+
+set -ex
+
+brew update
+
+brew upgrade
+
+brew cleanup
+
+{{ end -}}
