@@ -1,0 +1,10 @@
+{
+  "title": "npm Access Token",
+  "fields": [
+    {
+      "id": "credential",
+      "type": "CONCEALED",
+      "value": "test-npm-access-token"
+    }
+  ]
+}

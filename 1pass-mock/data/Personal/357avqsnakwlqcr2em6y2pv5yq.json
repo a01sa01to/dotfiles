@@ -1,0 +1,10 @@
+{
+  "title": "GitHub npm packages PAT",
+  "fields": [
+    {
+      "id": "credential",
+      "type": "CONCEALED",
+      "value": "test-github-packages-pat"
+    }
+  ]
+}
