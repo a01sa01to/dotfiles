@@ -5,11 +5,9 @@ set -ex
 
 # ----- gh CLI ----- #
 # https://github.com/cli/cli/blob/trunk/docs/install_macos.md
-
 brew install gh
-
 {{ if ne (env "CI") "true" -}}
-gh auth login
-{{ end }}
+  gh auth login
+{{- end }}
 
 {{ end -}}

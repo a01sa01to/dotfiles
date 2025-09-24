@@ -5,12 +5,10 @@ Set-PSDebug -Trace 1
 
 # ----- gh CLI ----- #
 # https://github.com/cli/cli/blob/trunk/docs/install_windows.md
-
 winget install --id GitHub.cli
-
 {{ if ne (env "CI") "true" -}}
-gh auth login
-{{ end }}
+  gh auth login
+{{- end }}
 
 Set-PSDebug -Trace Off
 
