@@ -139,6 +139,8 @@ jobs:
           ./1pass-mock &
           echo "PID=$!" >> "$GITHUB_OUTPUT"
         working-directory: 1pass-mock
+      - name: Wait for 1pass-mock to be ready
+        run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Run bootstrap.sh
         run: ./bootstrap.sh
       - name: chezmoi doctor
