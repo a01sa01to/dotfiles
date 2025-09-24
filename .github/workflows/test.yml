@@ -143,6 +143,8 @@ jobs:
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Run bootstrap.sh
         run: ./bootstrap.sh
+      - name: Install chezmoi (for test)
+        run: sudo snap install chezmoi --classic
       - name: chezmoi doctor
         run: chezmoi doctor
       - name: chezmoi verify
