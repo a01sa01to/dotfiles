@@ -51,6 +51,8 @@ FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-
 
 CommandExists "gh"
 
+CommandExists "fnm"
+
 # --------------------------------------------------- #
 
 if [ $FAIL -eq 1 ]; then

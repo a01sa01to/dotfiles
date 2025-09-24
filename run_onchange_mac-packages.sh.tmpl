@@ -10,4 +10,10 @@ brew install gh
   gh auth login
 {{- end }}
 
+# ----- fnm ----- #
+# https://github.com/Schniz/fnm?tab=readme-ov-file#using-homebrew-macoslinux
+brew install fnm
+# TODO: Shell setup は .zshrc に書く
+eval "$(fnm env --use-on-cd --shell zsh)"
+
 {{ end -}}
