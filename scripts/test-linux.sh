@@ -38,6 +38,10 @@ FileNotExists "$CONFIG_DIR/.wslconfig"
 FileExists "$CONFIG_DIR/.gitconfig"
 FileContains "$CONFIG_DIR/.gitconfig" "ssh-test-pubkey"
 
+FileExists "$CONFIG_DIR/.npmrc"
+FileContains "$CONFIG_DIR/.npmrc" "//registry.npmjs.org/:_authToken=test-npm-access-token"
+FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-packages-pat"
+
 # --------------------------------------------------- #
 
 if [ $FAIL -eq 1 ]; then

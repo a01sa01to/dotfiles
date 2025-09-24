@@ -4,7 +4,6 @@
     {
       "id": "publicKey",
       "type": "STRING",
-      "label": "公開鍵",
       "value": "ssh-test-pubkey"
     }
   ]
