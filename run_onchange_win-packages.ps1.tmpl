@@ -3,7 +3,14 @@
 $ErrorActionPreference = "Stop"
 Set-PSDebug -Trace 1
 
-winget upgrade --all
+# ----- gh CLI ----- #
+# https://github.com/cli/cli/blob/trunk/docs/install_windows.md
+
+winget install --id GitHub.cli
+
+{{ if ne (env "CI") "true" -}}
+gh auth login
+{{ end }}
 
 Set-PSDebug -Trace Off
 

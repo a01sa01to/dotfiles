@@ -1,13 +1,15 @@
 {{ if eq .chezmoi.os "darwin" -}}
 
 #!/bin/sh
-
 set -ex
 
-brew update
+# ----- gh CLI ----- #
+# https://github.com/cli/cli/blob/trunk/docs/install_macos.md
 
-brew upgrade
+brew install gh
 
-brew cleanup
+{{ if ne (env "CI") "true" -}}
+gh auth login
+{{ end }}
 
 {{ end -}}
