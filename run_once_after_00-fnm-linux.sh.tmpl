@@ -1,10 +1,9 @@
 {{ if eq .chezmoi.os "linux" -}}
 {{   if not (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
-
-# fnm for Linux は .bashrc を上書きするので after にする
-
 #!/bin/sh
 set -ex
+
+# fnm for Linux は .bashrc を上書きするので after にする
 
 # ----- fnm ----- #
 # https://github.com/Schniz/fnm?tab=readme-ov-file#using-a-script-macoslinux
