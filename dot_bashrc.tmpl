@@ -118,3 +118,10 @@ fi
 
 # editor
 export EDITOR=nano
+
+# fnm
+FNM_PATH="{{ env "HOME" }}/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "`fnm env`"
+fi
