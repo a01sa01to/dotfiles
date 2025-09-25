@@ -10,9 +10,12 @@ winget install --id GitHub.cli
   gh auth login
 {{- end }}
 
+# ----- Rust ----- #
+winget install -e --id Rustlang.Rustup
+
 # ----- fnm ----- #
-# https://github.com/Schniz/fnm?tab=readme-ov-file#using-winget-windows
-winget install Schniz.fnm
+# https://github.com/Schniz/fnm?tab=readme-ov-file#using-cargo-linuxmacoswindows
+cargo install fnm
 
 Set-PSDebug -Trace 0
 

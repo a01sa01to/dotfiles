@@ -59,6 +59,7 @@ FileExists "$CONFIG_DIR/.profile"
 FileNotExists "$CONFIG_DIR/.zshrc"
 
 CommandExists "gh"
+CommandExists "rustup"
 CommandExists "fnm"
 
 # --------------------------------------------------- #

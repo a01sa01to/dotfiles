@@ -63,6 +63,7 @@ FileNotExists "$CONFIG_DIR/.zshrc"
 FileExists $Profile.CurrentUserCurrentHost
 
 CommandExists "gh"
+CommandExists "rustup"
 CommandExists "fnm"
 
 # --------------------------------------------------- #
