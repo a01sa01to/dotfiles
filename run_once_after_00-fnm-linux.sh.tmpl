@@ -1,0 +1,14 @@
+# fnm for Linux は .bashrc を上書きするので after にする
+
+{{ if eq .chezmoi.os "linux" -}}
+{{   if not (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+
+#!/bin/sh
+set -ex
+
+# ----- fnm ----- #
+# https://github.com/Schniz/fnm?tab=readme-ov-file#using-a-script-macoslinux
+curl -fsSL https://fnm.vercel.app/install | bash
+
+{{   end -}}
+{{ end -}}
