@@ -13,8 +13,6 @@ winget install --id GitHub.cli
 # ----- fnm ----- #
 # https://github.com/Schniz/fnm?tab=readme-ov-file#using-winget-windows
 winget install Schniz.fnm
-# TODO: Shell setup は pwsh profile に書く
-fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 
 Set-PSDebug -Trace 0
 
