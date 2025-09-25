@@ -6,6 +6,10 @@ $Content = @"
 # PowerShell profile
 "@
 
-Set-Content -Path $Profile.CurrentUserCurrentHost -Value $Content -Force
+if (!(Test-Path -Path $Profile.CurrentUserCurrentHost)) {
+  New-Item -ItemType File -Path $Profile.CurrentUserCurrentHost -Force
+}
+
+Set-Content -Path $Profile.CurrentUserCurrentHost -Value $Content
 
 {{ end }}
