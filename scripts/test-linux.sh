@@ -1,7 +1,3 @@
-# debug
-cat ~/.bashrc
-echo "----"
-
 source ~/.bashrc
 
 FAIL=0
