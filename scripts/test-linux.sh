@@ -1,3 +1,5 @@
+source ~/.bashrc
+
 FAIL=0
 
 FileExists() {
