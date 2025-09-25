@@ -116,6 +116,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# editor
+EDITOR=nano
+
 # fnm
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
