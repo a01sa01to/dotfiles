@@ -10,7 +10,6 @@ function FileExists {
 
 function FileNotExists {
   param([string]$Path)
-  Write-Output "Checking $Path"
   if (Test-Path $Path -PathType Leaf) {
     Write-Output "::warning::$Path exists"
     $global:FAIL = 1
