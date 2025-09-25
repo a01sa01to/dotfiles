@@ -1,0 +1,11 @@
+{{ if eq .chezmoi.os "windows" -}}
+
+$ErrorActionPreference = "Stop"
+
+$Content = @"
+# PowerShell profile
+"@
+
+Set-Content -Path $Profile.CurrentUserCurrentHost -Value $Content -Force
+
+{{ end }}

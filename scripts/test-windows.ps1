@@ -52,6 +52,8 @@ FileNotExists "$CONFIG_DIR/.bashrc"
 
 FileNotExists "$CONFIG_DIR/.zshrc"
 
+FileExists $Profile.CurrentUserCurrentHost
+
 # --------------------------------------------------- #
 
 if ($FAIL -eq 1) {
