@@ -1,5 +1,3 @@
-#!/bin/sh
-
 set -e
 
 # https://developer.1password.com/docs/cli/get-started/

@@ -1,4 +1,3 @@
-#!/bin/sh
 FAIL=0
 
 FileExists() {

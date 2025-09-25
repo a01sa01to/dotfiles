@@ -23,9 +23,6 @@ jobs:
       matrix:
         runner: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.runner }}
-    defaults:
-      run:
-        shell: ${{ matrix.runner == 'macos-latest' && 'zsh {0}' || 'bash -e {0}' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -66,9 +63,9 @@ jobs:
       - name: Test
         run: |
           if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
-            sh "$GITHUB_WORKSPACE/scripts/test-linux.sh"
+            bash "$GITHUB_WORKSPACE/scripts/test-linux.sh"
           elif [ "${{ matrix.runner }}" = "macos-latest" ]; then
-            sh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
+            zsh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
           fi
       - name: Teardown 1pass-mock
         if: always()
@@ -153,7 +150,7 @@ jobs:
       - name: chezmoi verify
         run: chezmoi verify
       - name: Test
-        run: sh "$GITHUB_WORKSPACE/scripts/test-linux.sh"
+        run: bash "$GITHUB_WORKSPACE/scripts/test-linux.sh"
       - name: Teardown 1pass-mock
         if: always()
         run: kill ${{ steps.run-1passmock.outputs.PID }}
