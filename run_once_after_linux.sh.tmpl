@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "linux" -}}
+{{   if not (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+
+#!/bin/sh
+set -ex
+
+# ----- Common commands ----- #
+{{- range (.common_after_commands) }}
+{{ . }}
+{{- end }}
+
+{{   end -}}
+{{ end -}}

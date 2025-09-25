@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "windows" -}}
+
+$ErrorActionPreference = "Stop"
+Set-PSDebug -Trace 1
+
+# ----- Common commands ----- #
+{{- range (.common_after_commands) }}
+{{ . }}
+{{- end }}
+
+Set-PSDebug -Trace 0
+
+{{ end -}}

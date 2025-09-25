@@ -1,0 +1,11 @@
+{{ if eq .chezmoi.os "darwin" -}}
+
+#!/bin/sh
+set -ex
+
+# ----- Common commands ----- #
+{{- range (.common_after_commands) }}
+{{ . }}
+{{- end }}
+
+{{ end -}}

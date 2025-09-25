@@ -1,0 +1,2 @@
+common_after_commands:
+  - npm i -g @biomejs/biome @google/gemini-cli http-server lighthouse npm-check-updates pnpm wrangler yarn
