@@ -5,13 +5,19 @@ scripts
 1pass-mock
 
 {{ if eq .chezmoi.os "windows" -}}
-
+.bashrc
+.zshrc
+.profile
 {{ end -}}
 
 {{ if eq .chezmoi.os "darwin" -}}
+.bashrc
+.profile
 .wslconfig
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
+.zshrc
+.profile
 .wslconfig
 {{ end -}}

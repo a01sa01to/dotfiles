@@ -1,0 +1,15 @@
+{{ if eq .chezmoi.os "windows" -}}
+
+$ErrorActionPreference = "Stop"
+
+$Content = @"
+# PowerShell profile
+"@
+
+if (!(Test-Path -Path $Profile.CurrentUserCurrentHost)) {
+  New-Item -ItemType File -Path $Profile.CurrentUserCurrentHost -Force
+}
+
+Set-Content -Path $Profile.CurrentUserCurrentHost -Value $Content
+
+{{ end }}

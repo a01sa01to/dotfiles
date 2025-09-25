@@ -56,15 +56,21 @@ FileExists "$CONFIG_DIR/.npmrc"
 FileContains "$CONFIG_DIR/.npmrc" "//registry.npmjs.org/:_authToken=test-npm-access-token"
 FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-packages-pat"
 
-CommandExists "gh"
+FileNotExists "$CONFIG_DIR/.bashrc"
+FileNotExists "$CONFIG_DIR/.profile"
+FileNotExists "$CONFIG_DIR/.zshrc"
 
+FileExists $Profile.CurrentUserCurrentHost
+
+CommandExists "gh"
 CommandExists "fnm"
 
 # --------------------------------------------------- #
 
 if ($FAIL -eq 1) {
-    Write-Output "::error::Some tests failed"
-    exit 1
-} else {
-    Write-Output "::notice::All tests passed"
+  Write-Output "::error::Some tests failed"
+  exit 1
+}
+else {
+  Write-Output "::notice::All tests passed"
 }
