@@ -43,6 +43,10 @@ FileExists "$CONFIG_DIR/.npmrc"
 FileContains "$CONFIG_DIR/.npmrc" "//registry.npmjs.org/:_authToken=test-npm-access-token"
 FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-packages-pat"
 
+# FileNotExists "$CONFIG_DIR/.bashrc" # Actions だと bashrc が存在してしまう
+FileNotExists "$CONFIG_DIR/.profile"
+FileExists "$CONFIG_DIR/.zshrc"
+
 # --------------------------------------------------- #
 
 if [ $FAIL -eq 1 ]; then
