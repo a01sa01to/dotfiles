@@ -78,6 +78,9 @@ jobs:
     name: chezmoi (windows-latest)
     runs-on: windows-latest
     steps:
+      - name: Add Windows Defender Exclusion
+        # リアルタイムスキャンで npm install とかがめちゃくちゃ遅くなるので除外
+        run: Add-MpPreference -ExclusionPath $Env:UserProfile
       - name: Checkout
         uses: actions/checkout@v5
       - name: Setup Go
@@ -107,9 +110,6 @@ jobs:
             }
           }
           Write-Error "Timeout waiting for 1pass-mock to be ready"
-      - name: Add Windows Defender Exclusion
-        # npm install 時にめちゃくちゃ遅くなるので除外
-        run: Add-MpPreference -ExclusionPath $Env:Home
       - name: Update PATH for winget
         run: echo "$Env:LocalAppData\Microsoft\WinGet\Links" >> "$Env:GITHUB_PATH"
       - name: Setup chezmoi
