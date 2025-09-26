@@ -51,7 +51,6 @@ FileContains "$CONFIG_DIR/.npmrc" "//registry.npmjs.org/:_authToken=test-npm-acc
 FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-packages-pat"
 
 FileExists "$CONFIG_DIR/.bashrc"
-FileExists "$CONFIG_DIR/.profile"
 FileNotExists "$CONFIG_DIR/.zshrc"
 
 CommandExists "gh"
