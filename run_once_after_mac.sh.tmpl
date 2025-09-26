@@ -10,4 +10,10 @@ source ~/.zshrc
 {{ . }}
 {{- end }}
 
+{{- if ne (env "CI") "true" }}
+{{- range (.non_ci_after_commands) }}
+{{ . }}
+{{- end }}
+{{- end }}
+
 {{ end -}}

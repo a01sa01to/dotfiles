@@ -13,5 +13,11 @@ eval "$(fnm env --use-on-cd --shell bash)"
 {{ . }}
 {{- end }}
 
+{{- if ne (env "CI") "true" }}
+{{- range (.non_ci_after_commands) }}
+{{ . }}
+{{- end }}
+{{- end }}
+
 {{   end -}}
 {{ end -}}
