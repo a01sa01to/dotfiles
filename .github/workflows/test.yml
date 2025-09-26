@@ -78,9 +78,6 @@ jobs:
     name: chezmoi (windows-latest)
     runs-on: windows-latest
     steps:
-      - name: Add Windows Defender Exclusion
-        # リアルタイムスキャンで npm install とかがめちゃくちゃ遅くなるので除外
-        run: Add-MpPreference -ExclusionPath $Env:UserProfile
       - name: Checkout
         uses: actions/checkout@v5
       - name: Setup Go
