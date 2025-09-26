@@ -1,0 +1,19 @@
+{{ if eq .chezmoi.os "darwin" -}}
+
+#!/usr/bin/env zsh
+set -ex
+
+source ~/.zshrc
+
+# ----- Common commands ----- #
+{{- range (.common_after_commands) }}
+{{ . }}
+{{- end }}
+
+{{- if ne (env "CI") "true" }}
+{{- range (.non_ci_after_commands) }}
+{{ . }}
+{{- end }}
+{{- end }}
+
+{{ end -}}

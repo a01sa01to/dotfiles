@@ -3,7 +3,8 @@
 $ErrorActionPreference = "Stop"
 
 $Content = @"
-# PowerShell profile
+# fnm
+fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 "@
 
 if (!(Test-Path -Path $Profile.CurrentUserCurrentHost)) {

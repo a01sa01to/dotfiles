@@ -1,4 +1,5 @@
-#!/bin/sh
+source ~/.zshrc
+
 FAIL=0
 
 FileExists() {
@@ -29,6 +30,12 @@ FileNotContains() {
   fi
 }
 
+CommandExists() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "::warning::$1 command does not exist"
+    FAIL=1
+  fi
+}
 
 CONFIG_DIR=$(chezmoi target-path)
 
@@ -45,6 +52,17 @@ FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-
 
 # FileNotExists "$CONFIG_DIR/.bashrc" # Actions だと bashrc が存在してしまう
 FileExists "$CONFIG_DIR/.zshrc"
+
+CommandExists "gh"
+CommandExists "rustup"
+CommandExists "fnm"
+
+CommandExists "biome"
+CommandExists "http-server"
+CommandExists "ncu"
+CommandExists "pnpm"
+CommandExists "wrangler"
+CommandExists "yarn"
 
 # --------------------------------------------------- #
 

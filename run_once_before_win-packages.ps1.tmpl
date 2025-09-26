@@ -1,0 +1,39 @@
+{{ if eq .chezmoi.os "windows" -}}
+
+$ErrorActionPreference = "Stop"
+Set-PSDebug -Trace 1
+
+# ----- gh CLI ----- #
+# https://github.com/cli/cli/blob/trunk/docs/install_windows.md
+winget install -e --id GitHub.cli
+{{ if ne (env "CI") "true" -}}
+  gh auth login
+{{- end }}
+
+# ----- winget 系 ----- #
+winget install -e --id Rustlang.Rustup
+{{ if ne (env "CI") "true" -}}
+winget install -e --id 7zip.7zip
+winget install -e --id Docker.DockerDesktop
+winget install -e --id Google.GoogleDrive
+winget install -e --id GoLang.Go
+winget install -e --id Mozilla.Firefox.DeveloperEdition.ja
+winget install -e --id OBSProject.OBSStudio
+winget install -e --id Valve.Steam
+winget install -e --id Microsoft.PowerToys
+winget install -e --id Notion.Notion
+winget install -e --id Discord.Discord
+winget install -e --id Figma.Figma
+winget install -e --id Figma.FigmaAgent
+winget install -e --id ArminOsaj.AutoDarkMode
+winget install -e --id MSYS2.MSYS2
+winget install -e --id Apple.iTunes
+{{- end }}
+
+# ----- fnm ----- #
+# https://github.com/Schniz/fnm?tab=readme-ov-file#using-cargo-linuxmacoswindows
+cargo install fnm
+
+Set-PSDebug -Trace 0
+
+{{ end -}}

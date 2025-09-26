@@ -1,4 +1,7 @@
-#!/bin/sh
+# source .bashrc だと "If not running interactively, don't do anything" なので直接書く
+export PATH="$HOME/.cargo/bin:$PATH"
+eval "$(fnm env --use-on-cd --shell bash)"
+
 FAIL=0
 
 FileExists() {
@@ -29,6 +32,13 @@ FileNotContains() {
   fi
 }
 
+CommandExists() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "::warning::$1 command does not exist"
+    FAIL=1
+  fi
+}
+
 CONFIG_DIR=$(chezmoi target-path)
 
 # --------------------------------------------------- #
@@ -44,6 +54,17 @@ FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-
 
 FileExists "$CONFIG_DIR/.bashrc"
 FileNotExists "$CONFIG_DIR/.zshrc"
+
+CommandExists "gh"
+CommandExists "rustup"
+CommandExists "fnm"
+
+CommandExists "biome"
+CommandExists "http-server"
+CommandExists "ncu"
+CommandExists "pnpm"
+CommandExists "wrangler"
+CommandExists "yarn"
 
 # --------------------------------------------------- #
 

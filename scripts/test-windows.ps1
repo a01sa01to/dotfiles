@@ -10,7 +10,6 @@ function FileExists {
 
 function FileNotExists {
   param([string]$Path)
-  Write-Output "Checking $Path"
   if (Test-Path $Path -PathType Leaf) {
     Write-Output "::warning::$Path exists"
     $global:FAIL = 1
@@ -35,6 +34,14 @@ function FileNotContains {
   }
 }
 
+function CommandExists {
+  param([string]$Command)
+  if (-Not (Get-Command $Command -ErrorAction SilentlyContinue)) {
+    Write-Output "::warning::$Command command does not exist"
+    $global:FAIL = 1
+  }
+}
+
 $CONFIG_DIR = chezmoi target-path
 
 # --------------------------------------------------- #
@@ -52,6 +59,17 @@ FileNotExists "$CONFIG_DIR/.bashrc"
 FileNotExists "$CONFIG_DIR/.zshrc"
 
 FileExists $Profile.CurrentUserCurrentHost
+
+CommandExists "gh"
+CommandExists "rustup"
+CommandExists "fnm"
+
+CommandExists "biome"
+CommandExists "http-server"
+CommandExists "ncu"
+CommandExists "pnpm"
+CommandExists "wrangler"
+CommandExists "yarn"
 
 # --------------------------------------------------- #
 

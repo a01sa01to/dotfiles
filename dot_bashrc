@@ -115,3 +115,12 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# editor
+export EDITOR=nano
+
+# cargo
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# fnm
+eval "$(fnm env --use-on-cd --shell bash)"

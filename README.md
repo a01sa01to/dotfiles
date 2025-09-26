@@ -7,9 +7,18 @@ a01sa01to's Personal Dotfiles
 Install [chezmoi](https://www.chezmoi.io/install/) first.
 
 ```bash
-winget install twpayne.chezmoi
+winget install -e --id twpayne.chezmoi
 snap install chezmoi --classic
 brew install chezmoi
+```
+
+1Password, 1Password CLI are required to access secrets.
+
+```bash
+winget install -e --id AgileBits.1Password
+winget install -e --id AgileBits.1Password.CLI
+
+brew install 1password 1password-cli
 ```
 
 ### Windows
