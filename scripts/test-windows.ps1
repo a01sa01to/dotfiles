@@ -64,6 +64,13 @@ CommandExists "gh"
 CommandExists "rustup"
 CommandExists "fnm"
 
+CommandExists "biome"
+CommandExists "http-server"
+CommandExists "ncu"
+CommandExists "pnpm"
+CommandExists "wrangler"
+CommandExists "yarn"
+
 # --------------------------------------------------- #
 
 if ($FAIL -eq 1) {
