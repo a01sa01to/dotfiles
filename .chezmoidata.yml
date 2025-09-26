@@ -1,2 +1,4 @@
 common_after_commands:
+  - fnm install 22.20.0
+  - fnm use 22.20.0
   - npm i -g @biomejs/biome @google/gemini-cli http-server lighthouse npm-check-updates pnpm wrangler yarn
