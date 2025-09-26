@@ -107,6 +107,9 @@ jobs:
             }
           }
           Write-Error "Timeout waiting for 1pass-mock to be ready"
+      - name: Add Windows Defender Exclusion
+        # npm install 時にめちゃくちゃ遅くなるので除外
+        run: Add-MpPreference -ExclusionPath $Env:Home
       - name: Update PATH for winget
         run: echo "$Env:LocalAppData\Microsoft\WinGet\Links" >> "$Env:GITHUB_PATH"
       - name: Setup chezmoi
