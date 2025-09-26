@@ -1,7 +1,6 @@
 {{ if eq .chezmoi.os "linux" -}}
 {{   if not (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
 
-#!/bin/sh
 set -ex
 
 # ----- gh CLI ----- #
