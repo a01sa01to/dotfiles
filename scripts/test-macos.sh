@@ -1,3 +1,5 @@
+source ~/.zshrc
+
 FAIL=0
 
 FileExists() {

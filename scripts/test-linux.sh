@@ -1,4 +1,6 @@
-source ~/.bashrc
+# source .bashrc だと "If not running interactively, don't do anything" なので直接書く
+export PATH="$HOME/.cargo/bin:$PATH"
+eval "$(fnm env --use-on-cd --shell bash)"
 
 FAIL=0
 
