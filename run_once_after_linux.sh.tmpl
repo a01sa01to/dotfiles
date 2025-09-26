@@ -4,6 +4,8 @@
 #!/bin/sh
 set -ex
 
+source ~/.bashrc
+
 # ----- Common commands ----- #
 {{- range (.common_after_commands) }}
 {{ . }}

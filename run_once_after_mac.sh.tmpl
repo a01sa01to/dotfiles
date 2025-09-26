@@ -3,6 +3,8 @@
 #!/bin/sh
 set -ex
 
+source ~/.zshrc
+
 # ----- Common commands ----- #
 {{- range (.common_after_commands) }}
 {{ . }}
