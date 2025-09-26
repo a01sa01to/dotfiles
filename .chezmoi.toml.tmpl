@@ -16,7 +16,7 @@
 */ -}}
 {{ if eq .chezmoi.os "windows" }}
   command = "pwsh"
-  args = ["-c", "winget install 1password-cli --no-upgrade --nowarn || echo '1password-cli is already installed'"]
+  args = ["-c", "winget install -e --id AgileBits.1Password.CLI --no-upgrade --nowarn || echo '1password-cli is already installed'"]
 {{ else if eq .chezmoi.os "linux" }}
   command = "sh"
   args = ["-c", "$CHEZMOI_SOURCE_DIR/scripts/install-1pass.sh"]
