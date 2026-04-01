@@ -5,7 +5,8 @@ $ErrorActionPreference = "Stop"
 $Content = @"
 {{- if eq (env "CI") "true" }}
 # Update PATH
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+# ` でエスケープ
+`$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 {{- end }}
 # fnm
 fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
