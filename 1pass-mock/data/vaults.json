@@ -1,12 +1,6 @@
 [
   {
     "name": "Personal",
-    "id": "y5lmqa4j35oijhg6xdad7xsupm",
-    "type": "PERSONAL"
-  },
-  {
-    "name": "Access Tokens",
-    "id": "go2zdfj7fus4mi6frn2bd627e4",
-    "type": "USER_CREATED"
+    "id": "Personal"
   }
 ]
