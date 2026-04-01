@@ -1,38 +1,38 @@
 {{ if eq .chezmoi.os "windows" -}}
 
+function InstallWithWinget {
+  if (-not (winget list --id $args[0] -q)) {
+    Write-Output "Installing $($args[0]) with winget..."
+    winget install -e --id $args[0]
+  }
+  else {
+    Write-Output "$($args[0]) is already installed"
+  }
+}
+
 $ErrorActionPreference = "Stop"
 Set-PSDebug -Trace 1
 
-# ----- gh CLI ----- #
-# https://github.com/cli/cli/blob/trunk/docs/install_windows.md
-winget install -e --id GitHub.cli
-{{ if ne (env "CI") "true" -}}
-  gh auth login
-{{- end }}
+InstallWithWinget "GitHub.cli"
+InstallWithWinget "Rustlang.Rustup"
+InstallWithWinget "Schniz.fnm"
 
-# ----- winget 系 ----- #
-winget install -e --id Rustlang.Rustup
 {{ if ne (env "CI") "true" -}}
-winget install -e --id 7zip.7zip
-winget install -e --id Docker.DockerDesktop
-winget install -e --id Google.GoogleDrive
-winget install -e --id GoLang.Go
-winget install -e --id Mozilla.Firefox.DeveloperEdition.ja
-winget install -e --id OBSProject.OBSStudio
-winget install -e --id Valve.Steam
-winget install -e --id Microsoft.PowerToys
-winget install -e --id Notion.Notion
-winget install -e --id Discord.Discord
-winget install -e --id Figma.Figma
-winget install -e --id Figma.FigmaAgent
-winget install -e --id ArminOsaj.AutoDarkMode
-winget install -e --id MSYS2.MSYS2
-winget install -e --id Apple.iTunes
+InstallWithWinget "7zip.7zip"
+InstallWithWinget "Docker.DockerDesktop"
+InstallWithWinget "Google.GoogleDrive"
+InstallWithWinget "GoLang.Go"
+InstallWithWinget "Mozilla.Firefox.DeveloperEdition.ja"
+InstallWithWinget "OBSProject.OBSStudio"
+InstallWithWinget "Valve.Steam"
+InstallWithWinget "Microsoft.PowerToys"
+InstallWithWinget "Notion.Notion"
+InstallWithWinget "Discord.Discord"
+InstallWithWinget "Figma.Figma"
+InstallWithWinget "Figma.FigmaAgent"
+InstallWithWinget "MSYS2.MSYS2"
+InstallWithWinget "Apple.iTunes"
 {{- end }}
-
-# ----- fnm ----- #
-# https://github.com/Schniz/fnm?tab=readme-ov-file#using-cargo-linuxmacoswindows
-cargo install fnm
 
 Set-PSDebug -Trace 0
 
