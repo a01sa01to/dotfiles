@@ -60,6 +60,8 @@ FileNotExists "$CONFIG_DIR/.zshrc"
 
 FileExists $Profile.CurrentUserCurrentHost
 
+FileExists "$CONFIG_DIR/.config/husky/init.sh"
+
 CommandExists "gh"
 CommandExists "cargo"
 CommandExists "fnm"
