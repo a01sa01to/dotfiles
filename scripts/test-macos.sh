@@ -53,6 +53,8 @@ FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-
 # FileNotExists "$CONFIG_DIR/.bashrc" # Actions だと bashrc が存在してしまう
 FileExists "$CONFIG_DIR/.zshrc"
 
+FileExists "$CONFIG_DIR/.config/husky/init.sh"
+
 CommandExists "gh"
 CommandExists "fnm"
 
