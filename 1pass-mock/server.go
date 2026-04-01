@@ -37,7 +37,7 @@ func itemHandler(c echo.Context) error {
 func main() {
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	e.Use(middleware.RequestLogger())
 	e.GET("/health", healthCheckHandler)
 	e.GET("/v1/vaults", vaultsHandler)
 	e.GET("/v1/vaults/:vault_id/items/:item_id", itemHandler)
