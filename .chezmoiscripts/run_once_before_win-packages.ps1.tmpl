@@ -1,7 +1,7 @@
 {{ if eq .chezmoi.os "windows" -}}
 
 function InstallWithWinget {
-  if (-not (winget list --id $args[0] -q)) {
+  if (-not (winget list --id $args[0] -e -q)) {
     Write-Output "Installing $($args[0]) with winget..."
     winget install -e --id $args[0]
   }
