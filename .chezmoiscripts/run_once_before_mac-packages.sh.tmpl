@@ -1,0 +1,9 @@
+{{ if eq .chezmoi.os "darwin" -}}
+
+#!/usr/bin/env zsh
+set -ex
+
+brew install gh
+brew install fnm
+
+{{ end -}}

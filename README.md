@@ -40,3 +40,7 @@ brew install 1password 1password-cli
 ```bash
 chezmoi init --apply a01sa01to
 ```
+
+```bash
+gh auth login
+```

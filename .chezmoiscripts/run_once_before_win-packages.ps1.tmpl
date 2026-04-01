@@ -1,0 +1,40 @@
+{{ if eq .chezmoi.os "windows" -}}
+
+function InstallWithWinget {
+  winget list --id $args[0] -e --source winget >$null 2>&1
+  if ($LASTEXITCODE -ne 0) {
+    Write-Output "Installing $($args[0]) with winget..."
+    winget install -e --id $args[0] --source winget
+  }
+  else {
+    Write-Output "$($args[0]) is already installed"
+  }
+}
+
+$ErrorActionPreference = "Stop"
+Set-PSDebug -Trace 1
+
+InstallWithWinget "GitHub.cli"
+InstallWithWinget "Rustlang.Rustup"
+InstallWithWinget "Schniz.fnm"
+
+{{ if ne (env "CI") "true" -}}
+InstallWithWinget "7zip.7zip"
+InstallWithWinget "Docker.DockerDesktop"
+InstallWithWinget "Google.GoogleDrive"
+InstallWithWinget "GoLang.Go"
+InstallWithWinget "Mozilla.Firefox.DeveloperEdition.ja"
+InstallWithWinget "OBSProject.OBSStudio"
+InstallWithWinget "Valve.Steam"
+InstallWithWinget "Microsoft.PowerToys"
+InstallWithWinget "Notion.Notion"
+InstallWithWinget "Discord.Discord"
+InstallWithWinget "Figma.Figma"
+InstallWithWinget "Figma.FigmaAgent"
+InstallWithWinget "MSYS2.MSYS2"
+InstallWithWinget "Apple.iTunes"
+{{- end }}
+
+Set-PSDebug -Trace 0
+
+{{ end -}}

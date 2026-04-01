@@ -41,6 +41,9 @@ CommandExists() {
 
 CONFIG_DIR=$(chezmoi target-path)
 
+export PATH="$HOME/.local/share/fnm:$PATH"
+eval "$(fnm env --use-on-cd --shell bash)"
+
 # --------------------------------------------------- #
 
 FileNotExists "$CONFIG_DIR/.wslconfig"
@@ -56,7 +59,6 @@ FileExists "$CONFIG_DIR/.bashrc"
 FileNotExists "$CONFIG_DIR/.zshrc"
 
 CommandExists "gh"
-CommandExists "rustup"
 CommandExists "fnm"
 
 CommandExists "biome"
