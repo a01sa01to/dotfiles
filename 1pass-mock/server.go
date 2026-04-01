@@ -27,7 +27,13 @@ func itemHandler(c echo.Context) error {
 	itemID := c.Param("item_id")
 	log.Printf("Received request for vault_id: %s, item_id: %s", vaultID, itemID)
 
-	data, err := os.ReadFile(fmt.Sprintf("data/%s/%s.json", vaultID, itemID))
+	// uuid で来るはず
+	if itemID == "vaults" {
+		return c.String(http.StatusBadRequest, "Invalid item_id: vaults")
+	}
+
+	// ただの mock なので、 itemID だけでファイルを返す
+	data, err := os.ReadFile(fmt.Sprintf("data/%s.json", itemID))
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Failed to read item.json")
 	}
@@ -37,7 +43,7 @@ func itemHandler(c echo.Context) error {
 func main() {
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	e.Use(middleware.RequestLogger())
 	e.GET("/health", healthCheckHandler)
 	e.GET("/v1/vaults", vaultsHandler)
 	e.GET("/v1/vaults/:vault_id/items/:item_id", itemHandler)
