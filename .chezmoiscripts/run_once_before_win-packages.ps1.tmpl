@@ -1,9 +1,10 @@
 {{ if eq .chezmoi.os "windows" -}}
 
 function InstallWithWinget {
-  if (-not (winget list --id $args[0] -e -q)) {
+  winget list --id $args[0] -e --source winget >$null 2>&1
+  if ($LASTEXITCODE -ne 0) {
     Write-Output "Installing $($args[0]) with winget..."
-    winget install -e --id $args[0]
+    winget install -e --id $args[0] --source winget
   }
   else {
     Write-Output "$($args[0]) is already installed"

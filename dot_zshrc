@@ -1,5 +1,2 @@
-# cargo
-export PATH="$HOME/.cargo/bin:$PATH"
-
 # fnm
 eval "$(fnm env --use-on-cd --shell zsh)"

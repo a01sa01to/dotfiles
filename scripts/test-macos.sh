@@ -54,7 +54,7 @@ FileContains "$CONFIG_DIR/.npmrc" "//npm.pkg.github.com/:_authToken=test-github-
 FileExists "$CONFIG_DIR/.zshrc"
 
 CommandExists "gh"
-|CommandExists "fnm"
+CommandExists "fnm"
 
 CommandExists "biome"
 CommandExists "http-server"
