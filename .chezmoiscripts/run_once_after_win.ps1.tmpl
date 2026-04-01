@@ -3,6 +3,9 @@
 $ErrorActionPreference = "Stop"
 Set-PSDebug -Trace 1
 
+# Update PATH
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
 # ----- Common commands ----- #
 {{- range (.common_after_commands) }}
 {{ . }}

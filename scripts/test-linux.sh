@@ -56,7 +56,6 @@ FileExists "$CONFIG_DIR/.bashrc"
 FileNotExists "$CONFIG_DIR/.zshrc"
 
 CommandExists "gh"
-CommandExists "rustup"
 CommandExists "fnm"
 
 CommandExists "biome"

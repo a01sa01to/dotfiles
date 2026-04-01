@@ -60,6 +60,10 @@ FileNotExists "$CONFIG_DIR/.zshrc"
 
 FileExists $Profile.CurrentUserCurrentHost
 
+CommandExists "gh"
+CommandExists "cargo"
+CommandExists "fnm"
+
 CommandExists "biome"
 CommandExists "http-server"
 CommandExists "ncu"
