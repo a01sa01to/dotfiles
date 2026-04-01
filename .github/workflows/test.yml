@@ -18,15 +18,12 @@ env:
   GOLANG_VERSION: 1.26
 
 jobs:
-  chezmoi:
-    name: chezmoi
-    strategy:
-      matrix:
-        runner: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.runner }}
+  chezmoi-linux:
+    name: chezmoi (ubuntu-latest)
+    runs-on: ubuntu-latest
     defaults:
       run:
-        shell: ${{ matrix.runner == 'macos-latest' && 'zsh {0}' || 'bash -e {0}' }}
+        shell: bash -e {0}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -42,21 +39,10 @@ jobs:
           ./1pass-mock &
           echo "PID=$!" >> "$GITHUB_OUTPUT"
         working-directory: 1pass-mock
-      - name: Setup for macOS
-        if: matrix.runner == 'macos-latest'
-        run: |
-          # timeout を使えるようにする
-          brew install coreutils
-          alias timeout='gtimeout'
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
-        run: |
-          if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
-            sudo snap install chezmoi --classic
-          elif [ "${{ matrix.runner }}" = "macos-latest" ]; then
-            brew install chezmoi
-          fi
+        run: sudo snap install chezmoi --classic
       - name: Run chezmoi
         run: chezmoi init --apply -S $GITHUB_WORKSPACE --verbose
       - name: chezmoi doctor
@@ -65,12 +51,50 @@ jobs:
       - name: chezmoi verify
         run: chezmoi verify -S $GITHUB_WORKSPACE --verbose
       - name: Test
+        run: bash "$GITHUB_WORKSPACE/scripts/test-linux.sh"
+      - name: Teardown 1pass-mock
+        if: always()
+        run: kill ${{ steps.run-1passmock.outputs.PID }}
+
+  chezmoi-mac:
+    name: chezmoi (macos-latest)
+    runs-on: macos-latest
+    defaults:
+      run:
+        shell: zsh {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GOLANG_VERSION }}
+          cache-dependency-path: 1pass-mock/go.sum
+      - name: Run 1pass-mock
+        id: run-1passmock
         run: |
-          if [ "${{ matrix.runner }}" = "ubuntu-latest" ]; then
-            bash "$GITHUB_WORKSPACE/scripts/test-linux.sh"
-          elif [ "${{ matrix.runner }}" = "macos-latest" ]; then
-            zsh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
-          fi
+          go build -o 1pass-mock .
+          ./1pass-mock &
+          echo "PID=$!" >> "$GITHUB_OUTPUT"
+        working-directory: 1pass-mock
+      - name: Setup timeout
+        run: |
+          # timeout を使えるようにする
+          brew install coreutils
+          alias timeout='gtimeout'
+      - name: Wait for 1pass-mock to be ready
+        run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
+      - name: Setup chezmoi
+        run: brew install chezmoi
+      - name: Run chezmoi
+        run: chezmoi init --apply -S $GITHUB_WORKSPACE --verbose
+      - name: chezmoi doctor
+        # network 使うと GitHub API rate limit で引っかかるかもなので
+        run: chezmoi doctor --no-network -S $GITHUB_WORKSPACE --verbose
+      - name: chezmoi verify
+        run: chezmoi verify -S $GITHUB_WORKSPACE --verbose
+      - name: Test
+        run: zsh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
       - name: Teardown 1pass-mock
         if: always()
         run: kill ${{ steps.run-1passmock.outputs.PID }}
