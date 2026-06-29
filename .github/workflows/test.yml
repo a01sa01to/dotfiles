@@ -36,9 +36,9 @@ jobs:
         id: run-1passmock
         run: |
           go build -o 1pass-mock .
-          ./1pass-mock &
-          echo "PID=$!" >> "$GITHUB_OUTPUT"
+          ./1pass-mock
         working-directory: 1pass-mock
+        background: true
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Setup chezmoi
@@ -53,8 +53,7 @@ jobs:
       - name: Test
         run: bash "$GITHUB_WORKSPACE/scripts/test-linux.sh"
       - name: Teardown 1pass-mock
-        if: always()
-        run: kill ${{ steps.run-1passmock.outputs.PID }}
+        cancel: run-1passmock
 
   chezmoi-mac:
     name: chezmoi (macos-latest)
@@ -74,9 +73,9 @@ jobs:
         id: run-1passmock
         run: |
           go build -o 1pass-mock .
-          ./1pass-mock &
-          echo "PID=$!" >> "$GITHUB_OUTPUT"
+          ./1pass-mock
         working-directory: 1pass-mock
+        background: true
       - name: Setup timeout
         run: |
           # timeout を使えるようにする
@@ -96,8 +95,7 @@ jobs:
       - name: Test
         run: zsh "$GITHUB_WORKSPACE/scripts/test-macos.sh"
       - name: Teardown 1pass-mock
-        if: always()
-        run: kill ${{ steps.run-1passmock.outputs.PID }}
+        cancel: run-1passmock
 
   chezmoi-win:
     name: chezmoi (windows-latest)
@@ -114,9 +112,9 @@ jobs:
         id: run-1passmock
         run: |
           go build -o 1pass-mock.exe .
-          $process = Start-Process -FilePath .\1pass-mock.exe -PassThru
-          echo "PID=$($process.Id)" >> "$Env:GITHUB_OUTPUT"
+          .\1pass-mock.exe
         working-directory: 1pass-mock
+        background: true
       - name: Wait for 1pass-mock to be ready
         run: |
           $timeout = New-TimeSpan -Seconds 60
@@ -146,8 +144,7 @@ jobs:
       - name: Test
         run: pwsh "$Env:GITHUB_WORKSPACE\scripts\test-windows.ps1"
       - name: Teardown 1pass-mock
-        if: always()
-        run: Stop-Process -Id ${{ steps.run-1passmock.outputs.PID }} -Force
+        cancel: run-1passmock
 
   bootstrap:
     name: bootstrap.sh
@@ -164,9 +161,9 @@ jobs:
         id: run-1passmock
         run: |
           go build -o 1pass-mock .
-          ./1pass-mock &
-          echo "PID=$!" >> "$GITHUB_OUTPUT"
+          ./1pass-mock
         working-directory: 1pass-mock
+        background: true
       - name: Wait for 1pass-mock to be ready
         run: timeout 60s bash -c 'until curl -s http://localhost:8080/health; do sleep 1; done'
       - name: Run bootstrap.sh
@@ -180,5 +177,4 @@ jobs:
       - name: Test
         run: bash "$GITHUB_WORKSPACE/scripts/test-linux.sh"
       - name: Teardown 1pass-mock
-        if: always()
-        run: kill ${{ steps.run-1passmock.outputs.PID }}
+        cancel: run-1passmock
